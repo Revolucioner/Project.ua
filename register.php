@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +20,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="index.php">
                     Project
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,10 +37,10 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                             <li class="nav-item">
-                                <a class="nav-link" href="login.html">Login</a>
+                                <a class="nav-link" href="login.php">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="register.html">Register</a>
+                                <a class="nav-link" href="register.php">Register</a>
                             </li>
                     </ul>
                 </div>
@@ -52,17 +55,37 @@
                             <div class="card-header">Register</div>
 
                             <div class="card-body">
-                                <form method="POST" action="">
-
+                                <form method="POST" action="include/cheack.php">
+<?php
+    if (!isset($_SESSION['register'])){
+        $_SESSION['register'] = '';
+    }
+    $error_class = "@error('name') is-invalid @enderror";
+    $error_text = '<span class="invalid-feedback" role="alert">
+                        <strong>Ошибка валидации</strong>
+                    </span>';
+    $user_error = '<div class="alert alert-danger" role="alert">
+                        Данный пользователь уже существует
+                    </div>';
+if (empty($_SESSION['user_error'])){
+    $_SESSION['user_error'] = '';
+}
+    if ($_SESSION['user_error'] === TRUE){
+        echo $user_error;
+        $_SESSION['user_error'] = '';
+    }
+?>
                                     <div class="form-group row">
                                         <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
 
                                         <div class="col-md-6">
-                                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="" autofocus>
+                                            <input id="name" type="text" class="form-control
+                                            <?php if ($_SESSION['register'] == 'error_name'){
+                                                echo $error_class;}?>" name="name" autofocus>
 
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>Ошибка валидации</strong>
-                                                </span>
+                                            <?php if ($_SESSION['register'] == 'error_name'){
+                                                echo $error_text;
+                                                $_SESSION['register'] = '';}?>
                                         </div>
                                     </div>
 
@@ -70,7 +93,12 @@
                                         <label for="email" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
 
                                         <div class="col-md-6">
-                                            <input id="email" type="email" class="form-control" name="email" >
+                                            <input id="email" type="email" class="form-control
+                                            <?php if ($_SESSION['register'] == 'error_mail'){
+                                                echo $error_class;}?>" name="email" >
+                                            <?php if ($_SESSION['register'] == 'error_mail'){
+                                                echo $error_text;
+                                                $_SESSION['register'] = '';}?>
                                         </div>
                                     </div>
 
@@ -78,7 +106,12 @@
                                         <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
 
                                         <div class="col-md-6">
-                                            <input id="password" type="password" class="form-control " name="password"  autocomplete="new-password">
+                                            <input id="password" type="password" class="form-control
+                                            <?php if (($_SESSION['register'] == 'error_pas') || ($_SESSION['register'] == 'error_pas2')){
+                                                echo $error_class;}?>" name="password"  autocomplete="new-password">
+                                            <?php if (($_SESSION['register'] == 'error_pas') || ($_SESSION['register'] == 'error_pas2')){
+                                                echo $error_text;
+                                                $_SESSION['register'] = '';}?>
                                         </div>
                                     </div>
 
@@ -86,7 +119,12 @@
                                         <label for="password-confirm" class="col-md-4 col-form-label text-md-right">Confirm Password</label>
 
                                         <div class="col-md-6">
-                                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation"  autocomplete="new-password">
+                                            <input id="password-confirm" type="password" class="form-control
+                                            <?php if ($_SESSION['register'] == 'error_pas2'){
+                                                echo $error_class;}?>" name="password_confirmation"  autocomplete="new-password">
+                                            <?php if ($_SESSION['register'] == 'error_pas2'){
+                                                echo $error_text;
+                                                $_SESSION['register'] = '';}?>
                                         </div>
                                     </div>
 

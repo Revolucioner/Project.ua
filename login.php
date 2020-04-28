@@ -1,3 +1,28 @@
+<?php
+session_start();
+require('include/connectdb.php');
+if (isset($_POST['email'])){
+    $mail = filter_var(trim($_POST['email']),FILTER_SANITIZE_STRING);
+}else{
+    $mail = NULL;
+}
+if (isset($_POST['email'])){
+    $pas = md5(filter_var(trim($_POST['password']),FILTER_SANITIZE_STRING));
+} else {
+    $pas = NULL;
+}
+if (($mail != '') && ($pas != 'd41d8cd98f00b204e9800998ecf8427e')){
+    $query = "SELECT * FROM users WHERE mail = '{$mail}' && pas = '{$pas}'";
+    $query = mysqli_query($connect, $query);
+    $result = mysqli_fetch_assoc($query);
+    if (($result['name'] != NULL) && ($result['id'] != NULL)){
+        $_SESSION['user_name'] = $result['name'];
+        $_SESSION['user_id'] = $result['id'];
+        header('location: /');
+    }
+}
+mysqli_close($connect);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +42,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="index.php">
                     Project
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,10 +59,10 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                             <li class="nav-item">
-                                <a class="nav-link" href="login.html">Login</a>
+                                <a class="nav-link" href="login.php">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="register.html">Register</a>
+                                <a class="nav-link" href="register.php">Register</a>
                             </li>
                     </ul>
                 </div>
@@ -56,12 +81,28 @@
 
                                     <div class="form-group row">
                                         <label for="email" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
-
+<?php
+$error_class = 'is-invalid';
+$error_mail_text = '<span class="invalid-feedback" role="alert">
+                    <strong>Введите amail</strong>
+                </span>';
+$error_pas_text = '<span class="invalid-feedback" role="alert">
+                    <strong>Введите пароль</strong>
+                </span>';
+$error_text = '<span class="invalid-feedback" role="alert">
+                    <strong>Ошибка валидации</strong>
+                </span>';
+?>
                                         <div class="col-md-6">
-                                            <input id="email" type="email" class="form-control is-invalid " name="email"  autocomplete="email" autofocus >
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>Ошибка валидации</strong>
-                                                </span>
+                                            <input id="email" type="email" class="form-control <?php if (($mail === '') || (($mail != '') && ($pas != 'd41d8cd98f00b204e9800998ecf8427e'))){
+                                                echo $error_class; } ?> " name="email"  autocomplete="email" autofocus >
+                                            <?php if ($mail === ''){
+                                                echo $error_mail_text; }
+                                            if (($mail != '') && ($pas != 'd41d8cd98f00b204e9800998ecf8427e')){
+                                                echo $error_text ;
+                                            }
+                                                ?>
+
                                         </div>
                                     </div>
 
@@ -69,7 +110,15 @@
                                         <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
 
                                         <div class="col-md-6">
-                                            <input id="password" type="password" class="form-control" name="password"  autocomplete="current-password">
+                                            <input id="password" type="password" class="form-control
+                                                <?php if (($pas == 'd41d8cd98f00b204e9800998ecf8427e') || (($mail != '') && ($pas != 'd41d8cd98f00b204e9800998ecf8427e'))){
+                                                    echo $error_class; } ?>
+                                                  " name="password"  autocomplete="current-password">
+                                            <?php if ($pas === 'd41d8cd98f00b204e9800998ecf8427e') {
+                                                echo $error_pas_text; }
+                                                 if (($mail != '') && ($pas != 'd41d8cd98f00b204e9800998ecf8427e')){
+                                                     echo $error_text ;
+                                                 }?>
                                         </div>
                                     </div>
 
