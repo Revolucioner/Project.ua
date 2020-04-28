@@ -86,7 +86,7 @@ if (isset($_SESSION['user_id'])){
 
                                     <tbody>
 <?php
-    $query = mysqli_query($connect,"SELECT * FROM comments");
+    $query = mysqli_query($connect,"SELECT * FROM comments ORDER BY id DESC");
     while($result = mysqli_fetch_assoc($query)){
         $user_id = $result['user_id'];
         if ($result['user_id'] != NULL){

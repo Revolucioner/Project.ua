@@ -98,7 +98,7 @@ $comment_error_text = '<div class="alert alert-danger" role="alert">
         echo $comment_error_text;
         $_SESSION['comment'] = 0;
     }
-    $query = mysqli_query($connect,'SELECT * FROM comments WHERE visible = 1');
+    $query = mysqli_query($connect,'SELECT * FROM comments WHERE visible = 1 ORDER BY id DESC');
     while($result = mysqli_fetch_assoc($query)){?>
                             <div class="media">
                                 <img src="
