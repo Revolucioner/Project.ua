@@ -2,6 +2,24 @@
 session_start();
 require('include/connectdb.php');
 $user_id = $_SESSION['user_id']??'';
+
+if (!empty($_POST)){
+    $is_ban = explode('*', $_POST['act']);
+    $comment_id = $is_ban['0'];
+    $act = $is_ban['1'];
+    if ($act === 'ban')
+    {
+        $query = "UPDATE comments SET visible = 0 WHERE id = '{$comment_id}'";
+    }elseif($act === 'no_ban')
+    {
+        $query = "UPDATE comments SET visible = 1 WHERE id = '{$comment_id}'";
+    }elseif ($act === 'delete'){
+        $query = "DELETE FROM comments WHERE id = '{$comment_id}'";
+    }
+    $query = mysqli_query($connect, $query);
+    var_dump($is_ban);
+    var_dump($act);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -103,7 +121,7 @@ if (isset($_SESSION['user_id'])){
         }else{
             $user_name = $result['commenter'];
         }
-        ?>
+    ?>
                                         <tr>
                                             <td>
                                                 <img src="<?php echo $user_url_img; ?>" alt="" class="img-fluid" width="64" height="64">
@@ -112,17 +130,19 @@ if (isset($_SESSION['user_id'])){
                                             <td><?php echo $result['date']; ?></td>
                                             <td><?php echo $result['comments']; ?></td>
                                             <td>
+                                                <form action="" method="POST">
 <?php
     if ($result['visible'] != TRUE){
-                                        echo '<a href="" class="btn btn-success">Разрешить</a>';
+                                            echo '<button class="btn btn-success" type="submit" name="act" value="' . $result['id'] . '*no_ban">Разрешить</button>';
     }else{
-                                        echo '<a href="" class="btn btn-warning">Запретить</a>';
+                                            echo '<button class="btn btn-warning" type="submit" name="act" value="' . $result['id'] . '*ban">Запретить</button>';
 }
 ?>
-                                                <a href="" onclick="return confirm('are you sure?')" class="btn btn-danger">Удалить</a>
+                                                    <button onclick="return confirm('are you sure?')" class="btn btn-danger" type="submit" name="act" value="<?php echo $result['id'] . '*delete'; ?>">Удалить</button>
+                                                </form>
                                             </td>
                                         </tr>
-    <?php } ?>
+<?php } var_dump($_POST);?>
                                     </tbody>
                                 </table>
                             </div>
