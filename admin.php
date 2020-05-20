@@ -8,18 +8,16 @@ if (!empty($_POST)){
     $comment_id = $is_ban['0'];
     $act = $is_ban['1'];
     if ($act === 'ban')
-    {
-        $query = "UPDATE comments SET visible = 0 WHERE id = '{$comment_id}'";
-    }elseif($act === 'no_ban')
-    {
-        $query = "UPDATE comments SET visible = 1 WHERE id = '{$comment_id}'";
-    }elseif ($act === 'delete'){
-        $query = "DELETE FROM comments WHERE id = '{$comment_id}'";
+        {
+            $query = "UPDATE comments SET visible = 0 WHERE id = '{$comment_id}'";
+        }elseif($act === 'no_ban')
+        {
+            $query = "UPDATE comments SET visible = 1 WHERE id = '{$comment_id}'";
+        }elseif ($act === 'delete'){
+            $query = "DELETE FROM comments WHERE id = '{$comment_id}'";
+        }
+        $query = mysqli_query($connect, $query);
     }
-    $query = mysqli_query($connect, $query);
-    var_dump($is_ban);
-    var_dump($act);
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -142,7 +140,7 @@ if (isset($_SESSION['user_id'])){
                                                 </form>
                                             </td>
                                         </tr>
-<?php } var_dump($_POST);?>
+<?php } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -154,3 +152,6 @@ if (isset($_SESSION['user_id'])){
     </div>
 </body>
 </html>
+<?php
+mysqli_close($connect);
+?>

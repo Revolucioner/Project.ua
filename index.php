@@ -5,7 +5,6 @@ $user_id = $_SESSION['user_id']??'';
 if (empty($_SESSION['comment'])){
     $_SESSION['comment'] = 0;
 }
-var_dump($_SESSION);
 ?>
 <!DOCTYPE html>
 <html lang="en">
